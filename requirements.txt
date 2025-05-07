@@ -1,0 +1,11 @@
+pip install torch torchvision torchaudio
+pip install google-generativeai
+pip install opencv-python
+pip install matplotlib
+pip install yolov5  
+
+pip install opencv-python
+pip install numpy
+pip install inference  
+pip install pillow
+pip install google-generativeai

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Live Grocery Recognition</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f3e5f5, #e1f5fe);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h2 {
+      color: #6a1b9a;
+      margin-bottom: 20px;
+      font-size: 32px;
+    }
+
+    video {
+      width: 640px;
+      height: 480px;
+      border: 6px solid #ba68c8;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+      margin-bottom: 20px;
+    }
+
+    button {
+      background: #6a1b9a;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+      margin-bottom: 20px;
+    }
+
+    button:hover {
+      background: #4a148c;
+    }
+
+    #item-name {
+      font-size: 22px;
+      color: #00796b;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+
+    #grocery-info {
+      margin-top: 15px;
+      background: #f3f3f3;
+      padding: 18px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      max-width: 700px;
+      text-align: left;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+  <h2>Live Grocery Recognition</h2>
+  <video id="video" autoplay></video>
+  <button onclick="captureAndSend()">🔍 Identify Grocery</button>
+
+  <h3 id="item-name"></h3>
+  <div id="grocery-info"></div>
+
+  <script>
+    const video = document.getElementById('video');
+
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then((stream) => {
+        video.srcObject = stream;
+      });
+
+    function captureAndSend() {
+      const canvas = document.createElement('canvas');
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+      const dataURL = canvas.toDataURL('image/jpeg');
+
+      fetch('/infer', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: dataURL })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.item) {
+          document.getElementById('item-name').textContent = "Item: " + data.item;
+          document.getElementById('grocery-info').textContent = data.info;
+        } else {
+          document.getElementById('grocery-info').textContent = "⚠️ No prediction or error occurred.";
+          document.getElementById('item-name').textContent = "";
+        }
+      })
+      .catch(err => {
+        document.getElementById('item-name').textContent = "❌ Error";
+        document.getElementById('grocery-info').textContent = err;
+      });
+    }
+  </script>
+</body>
+</html>
