@@ -20,7 +20,7 @@ CLIENT = InferenceHTTPClient(
 )
 
 # Gemini setup
-genai.configure(api_key="s")
+genai.configure(api_key="surya")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 def get_grocery_info(grocery_name):
