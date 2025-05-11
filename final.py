@@ -12,7 +12,7 @@ CLIENT = InferenceHTTPClient(
 )
 
 # Set up Gemini API key
-genai.configure(api_key="AIzaSyD5EVduUfkCnbj_fWs2-Lci18Eq7necSYs")
+genai.configure(api_key="surya")
 model = genai.GenerativeModel("gemini-1.5-flash")  # ✅ Confirmed working model
 
 # Use the correct available model

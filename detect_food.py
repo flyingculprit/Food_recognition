@@ -5,7 +5,7 @@ import google.generativeai as genai
 
 # -------- CONFIG --------
 EFFNET_MODEL_PATH = "EfficientNetB1.hdf5"  # EfficientNetB1 model path
-GEMINI_API_KEY = "AIzaSyDERLxqdKP6XHgqqzXOZEDvKFnbYDWNLGk"  # Replace with your actual Gemini key
+GEMINI_API_KEY = "surya"  # Replace with your actual Gemini key
 IMAGE_PATH = "egg.jpg"  # Replace with your food image
 
 # -------- 1. Load EfficientNetB1 Model --------

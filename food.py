@@ -4,7 +4,7 @@ import google.generativeai as genai
 
 # -------- CONFIG --------
 YOLO_MODEL_PATH = "E:/Git/food_detection/best.pt"  # Downloaded model
-GEMINI_API_KEY = "AIzaSyABi2JxvIjYdkiS0es6Uu_jBT_H1mRAB5Q"  # Replace with your actual Gemini key
+GEMINI_API_KEY = "surya"  # Replace with your actual Gemini key
 IMAGE_PATH = "E:/Git/food_detection/egg.jpg"  # Replace with your food image
 
 # -------- 1. Load YOLOv5 Model --------
