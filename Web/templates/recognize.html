@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Food Product Recognition</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: black;
+      color: white;
+      text-align: center;
+      overflow-x: hidden;
+      height: 100%;
+      margin: 0;
+      position: relative;
+    }
+
+    video {
+      width: 40vw; /* Reduced camera size */
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+      margin-bottom: 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    button {
+      background-color: #ae77fa;
+      color: white;
+      padding: 10px 20px;
+      font-size: 18px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      margin-top: 20px;
+    }
+
+    button:hover {
+      background-color: #8d53c2;
+    }
+
+    #result {
+      margin-top: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
+      white-space: pre-wrap; /* Ensure line breaks in result */
+      text-align: left;
+      display: inline-block;
+      width: 80%;
+      max-width: 600px;
+      max-height: 400px; /* Limit box height */
+      overflow-y: auto; /* Allow scrolling */
+      font-size: 18px;
+      word-wrap: break-word; /* Allow long words to wrap */
+    }
+
+    #result h3 {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #ae77fa;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 3rem;
+      animation: moveEmoji linear infinite;
+      opacity: 0.8;
+      z-index: 0;
+    }
+
+    @keyframes moveEmoji {
+      0% {
+        transform: translateY(0) rotate(0deg);
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+      }
+    }
+
+    /* Center the result box and add padding */
+    .result-container {
+      position: relative;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+  <h2>📷 Food Product Recognition</h2>
+
+  <video id="video" width="40vw" height="auto" autoplay></video><br>
+  <button onclick="capture()">📸 Capture & Analyze</button>
+  <canvas id="canvas" width="320" height="240" style="display:none;"></canvas>
+
+  <!-- The result box is now below the button -->
+  <div class="result-container">
+    <div id="result"></div>
+  </div>
+<script>
+    function capture() {
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imageData = canvas.toDataURL('image/jpeg');
+
+      fetch('/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData })
+      })
+      .then(res => res.json())
+      .then(data => {
+        // Split the result text into lines
+        const resultText = data.result;
+        
+        // Process each line to identify questions and apply bold formatting
+        let formattedResult = resultText.split('\n').map(line => {
+          if (line.includes('Which age people need to eat:')) {
+            return `<strong>${line}</strong>`; // Bold the question
+          }
+          if (line.includes('Approximate list of chemical additives or preservatives')) {
+            return `<strong>${line}</strong>`;
+          }
+          if (line.includes('Side effects (downsides) in 5 words:')) {
+            return `<strong>${line}</strong>`;
+          }
+          if (line.includes('Vitamins and minerals in 5 words:')) {
+            return `<strong>${line}</strong>`;
+          }
+          if (line.includes('A 2-3 line summary at the end in 10 words:')) {
+            return `<strong>${line}</strong>`;
+          }
+          return line; // Leave the rest of the lines as they are
+        }).join('<br>'); // Use <br> to separate lines vertically
+        
+        resultDiv.innerHTML = `<h3>Result:</h3>${formattedResult}`;
+      })
+      .catch(err => console.error(err));
+    }
+</script>
+
+  <script>
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const resultDiv = document.getElementById('result');
+
+    // Start webcam
+    navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => video.srcObject = stream)
+      .catch(err => console.error("Webcam error: ", err));
+
+    function capture() {
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+      const imageData = canvas.toDataURL('image/jpeg');
+
+      fetch('/analyze', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: imageData })
+      })
+      .then(res => res.json())
+      .then(data => {
+        // Split the result text into lines and display it vertically
+        const resultText = data.result;
+        const formattedResult = resultText.split('\n').map(line => `<p>${line}</p>`).join('');
+        resultDiv.innerHTML = `<h3>Result:</h3>${formattedResult}`;
+      })
+      .catch(err => console.error(err));
+    }
+
+    // Emojis background movement
+    const emojis = ['🍕', '🍔', '🍟', '🍩', '🌮', '🍣', '🍝', '🥗', '🥪', '🍦'];
+    for (let i = 0; i < 50; i++) {
+      const emoji = document.createElement('div');
+      emoji.classList.add('emoji');
+      emoji.style.left = Math.random() * 100 + 'vw';
+      emoji.style.top = Math.random() * 100 + 'vh'; /* Positioned in the background */
+      emoji.style.animationDuration = (5 + Math.random() * 10) + 's';
+      emoji.style.fontSize = (1 + Math.random() * 2) + 'rem';
+      emoji.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+      document.body.appendChild(emoji);
+    }
+  </script>
+</body>
+</html>
