@@ -7,7 +7,7 @@ import io
 app = Flask(__name__)
 
 # Configure Gemini API
-genai.configure(api_key="surya")  # Replace with your key
+genai.configure(api_key="AIzaSyBkQSeElRxt2jD98uc21JAxlKkiQkUNcOc")  # Replace with your key
 model = genai.GenerativeModel('models/gemini-1.5-flash')
 
 @app.route('/')
@@ -30,11 +30,11 @@ def analyze():
     prompt = """
 Provide detailed information about the grocery product.
 Include:
-1. Which age people need to eat
-2. Approximate list of chemical additives or preservatives usually found in similar products
-3. Side effects (downsides) in 5 words
-4. Vitamins and minerals in 5 words
-5. A 2-3 line summary at the end in 10 words
+1. Which age people Can eat:
+2. Approximate list of chemical additives or preservatives usually found in similar products:
+3. Side effects (downsides) in 10 words:
+4. Vitamins and minerals in 5 words:
+5. A 2-3 line summary at the end:
 State clearly this is a general approximation based on the image.
 """
 

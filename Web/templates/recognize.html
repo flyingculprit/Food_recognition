@@ -102,80 +102,58 @@
     <div id="result"></div>
   </div>
 <script>
-    function capture() {
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  const resultDiv = document.getElementById('result');
 
-      const imageData = canvas.toDataURL('image/jpeg');
+  // Start the webcam
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+      video.play();
+    })
+    .catch(err => console.error("Webcam error: ", err));
 
-      fetch('/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData })
-      })
-      .then(res => res.json())
-      .then(data => {
-        // Split the result text into lines
-        const resultText = data.result;
-        
-        // Process each line to identify questions and apply bold formatting
-        let formattedResult = resultText.split('\n').map(line => {
-          if (line.includes('Which age people need to eat:')) {
-            return `<strong>${line}</strong>`; // Bold the question
-          }
-          if (line.includes('Approximate list of chemical additives or preservatives')) {
+  // Capture image and send to server
+  function capture() {
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    const imageData = canvas.toDataURL('image/jpeg');
+
+    fetch('/analyze', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ image: imageData })
+    })
+    .then(res => res.json())
+    .then(data => {
+      const resultText = data.result || "";
+
+      // Format result with bold for specific questions
+      const formattedResult = resultText
+        .replace(/\*\*/g, '') // Clean up any existing markdown
+        .split('\n')
+        .map(line => {
+          if (
+            line.includes('Which age people need to eat:') ||
+            line.includes('Approximate list of chemical additives or preservatives:') ||
+            line.includes('Side effects (downsides)in shorter in 10 words:') ||
+            line.includes('Vitamins and minerals in shorter in 5 words:') ||
+            line.includes('A 2-3 line summary at the end:')
+          ) {
             return `<strong>${line}</strong>`;
           }
-          if (line.includes('Side effects (downsides) in 5 words:')) {
-            return `<strong>${line}</strong>`;
-          }
-          if (line.includes('Vitamins and minerals in 5 words:')) {
-            return `<strong>${line}</strong>`;
-          }
-          if (line.includes('A 2-3 line summary at the end in 10 words:')) {
-            return `<strong>${line}</strong>`;
-          }
-          return line; // Leave the rest of the lines as they are
-        }).join('<br>'); // Use <br> to separate lines vertically
-        
-        resultDiv.innerHTML = `<h3>Result:</h3>${formattedResult}`;
-      })
-      .catch(err => console.error(err));
-    }
-</script>
+          return line;
+        })
+        .join('<br>');
 
-  <script>
-    const video = document.getElementById('video');
-    const canvas = document.getElementById('canvas');
-    const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `<h3>Result:</h3>${formattedResult}`;
+    })
+    .catch(err => console.error("Analysis error: ", err));
+  }
 
-    // Start webcam
-    navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => video.srcObject = stream)
-      .catch(err => console.error("Webcam error: ", err));
-
-    function capture() {
-      const ctx = canvas.getContext('2d');
-      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-      const imageData = canvas.toDataURL('image/jpeg');
-
-      fetch('/analyze', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ image: imageData })
-      })
-      .then(res => res.json())
-      .then(data => {
-        // Split the result text into lines and display it vertically
-        const resultText = data.result;
-        const formattedResult = resultText.split('\n').map(line => `<p>${line}</p>`).join('');
-        resultDiv.innerHTML = `<h3>Result:</h3>${formattedResult}`;
-      })
-      .catch(err => console.error(err));
-    }
-
-    // Emojis background movement
+      // Emojis background movement
     const emojis = ['🍕', '🍔', '🍟', '🍩', '🌮', '🍣', '🍝', '🥗', '🥪', '🍦'];
     for (let i = 0; i < 50; i++) {
       const emoji = document.createElement('div');
@@ -188,5 +166,22 @@
       document.body.appendChild(emoji);
     }
   </script>
+
+
+
+
+
+<style>
+  @keyframes float {
+    0% { transform: translateY(0px); opacity: 1; }
+    50% { transform: translateY(-20px); opacity: 0.7; }
+    100% { transform: translateY(0px); opacity: 1; }
+  }
+  .emoji {
+    z-index: -1;
+    pointer-events: none;
+  }
+</style>
+
 </body>
 </html>
