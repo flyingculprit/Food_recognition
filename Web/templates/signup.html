@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8" />
+  <title>Sign Up</title>
+  <style>
+    /* Reset & base */
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body {
+      background: #000;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      user-select: none;
+    }
+    /* Container */
+    .container {
+      background: rgba(255 255 255 / 0.05);
+      padding: 40px 50px;
+      border-radius: 12px;
+      box-shadow: 0 0 20px #7a3cffaa; /* purple glow */
+      width: 350px;
+      animation: fadeInUp 1s ease forwards;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-weight: 700;
+      font-size: 2.2rem;
+      letter-spacing: 1.5px;
+      color: #7a3cff;
+      text-shadow: 0 0 10px #7a3cffcc;
+    }
+    ul {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+    ul li {
+      color: #9c7aff;
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 8px;
+      animation: fadeIn 1.2s ease forwards;
+    }
+    label {
+      font-weight: 600;
+      font-size: 1rem;
+      display: block;
+      margin-bottom: 8px;
+      color: #7a3cff;
+    }
+    input[type="email"], input[type="password"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: none;
+      border-radius: 8px;
+      margin-bottom: 25px;
+      font-size: 1rem;
+      background: #222;
+      color: #eee;
+      box-shadow: inset 0 0 10px #7a3cff88;
+      transition: box-shadow 0.3s ease;
+    }
+    input[type="email"]:focus, input[type="password"]:focus {
+      outline: none;
+      box-shadow: 0 0 15px #7a3cffcc;
+      background: #111;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: #7a3cff;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 0 25px #7a3cffcc;
+      transition: background 0.3s ease, box-shadow 0.3s ease;
+      user-select: none;
+    }
+    button:hover {
+      background: #9b63ff;
+      box-shadow: 0 0 35px #9b63ffcc;
+    }
+    p {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 0.9rem;
+      color: #bbb;
+    }
+    p a {
+      color: #7a3cff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+    p a:hover {
+      color: #9b63ff;
+      text-shadow: 0 0 7px #9b63ffcc;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    @keyframes fadeIn {
+      0% {opacity: 0;}
+      100% {opacity: 1;}
+    }
+
+    /* Sparkle styles */
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      width: 14px;
+      height: 14px;
+      animation: sparkle-pop 700ms ease forwards;
+      filter: drop-shadow(0 0 2px);
+      z-index: 9999;
+      transform-origin: center;
+    }
+
+    /* Star SVG colors via classes */
+    .color-purple svg polygon {
+      fill: #7a3cff;
+      stroke: #9b63ff;
+      stroke-width: 0.7;
+      filter: drop-shadow(0 0 2px #9b63ff);
+    }
+    .color-blue svg polygon {
+      fill: #3b82f6;
+      stroke: #60a5fa;
+      stroke-width: 0.7;
+      filter: drop-shadow(0 0 2px #60a5fa);
+    }
+    .color-cyan svg polygon {
+      fill: #06b6d4;
+      stroke: #22d3ee;
+      stroke-width: 0.7;
+      filter: drop-shadow(0 0 2px #22d3ee);
+    }
+    .color-magenta svg polygon {
+      fill: #d946ef;
+      stroke: #ec4899;
+      stroke-width: 0.7;
+      filter: drop-shadow(0 0 2px #ec4899);
+    }
+
+    @keyframes sparkle-pop {
+      0% {
+        opacity: 0;
+        transform: scale(0.3) rotate(0deg);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.2) rotate(180deg);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0.6) rotate(360deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Sign Up</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for msg in messages %}
+            <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="POST" autocomplete="off">
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required />
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required />
+      <button type="submit">Sign Up</button>
+    </form>
+    <p>Already have an account? <a href="{{ url_for('login') }}">Login here</a></p>
+  </div>
+
+  <script>
+    const starSVG = `
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" >
+        <polygon points="12 2 15 11 24 11 17 17 20 26 12 20 4 26 7 17 0 11 9 11" />
+      </svg>
+    `;
+
+    const colors = ['color-purple', 'color-blue', 'color-cyan', 'color-magenta'];
+
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('sparkle');
+
+      // Assign a random color class
+      const colorClass = colors[Math.floor(Math.random() * colors.length)];
+      sparkle.classList.add(colorClass);
+
+      sparkle.style.left = (x - 7) + 'px'; // center sparkle on cursor
+      sparkle.style.top = (y - 7) + 'px';
+      sparkle.innerHTML = starSVG;
+      document.body.appendChild(sparkle);
+
+      // Remove sparkle after animation finishes (~700ms)
+      setTimeout(() => {
+        sparkle.remove();
+      }, 700);
+    }
+
+    // Throttle sparkles on mousemove for performance
+    let lastTime = 0;
+    document.addEventListener('mousemove', e => {
+      const now = Date.now();
+      if (now - lastTime > 50) {
+        createSparkle(e.clientX, e.clientY);
+        lastTime = now;
+      }
+    });
+  </script>
+</body>
+</html>

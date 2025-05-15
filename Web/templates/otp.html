@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>OTP Verification</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      background-color: #000;
+      color: #eee;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .container {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 25px #AA60C8aa;
+      width: 350px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #AA60C8;
+      text-shadow: 0 0 10px #AA60C8cc;
+    }
+    ul {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+    ul li {
+      color: #ff8080;
+      text-align: center;
+      font-weight: bold;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #C39CEB;
+      font-weight: bold;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1rem;
+      border: none;
+      border-radius: 8px;
+      background: #222;
+      color: #fff;
+      box-shadow: 0 0 10px #AA60C8aa;
+      margin-bottom: 20px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      background: #AA60C8;
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 0 0 20px #AA60C8cc;
+    }
+    button:hover {
+      background: #C39CEB;
+      box-shadow: 0 0 30px #C39CEBcc;
+    }
+    p {
+      text-align: center;
+      margin-top: 20px;
+      color: #bbb;
+    }
+    p a {
+      color: #AA60C8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    p a:hover {
+      text-shadow: 0 0 10px #AA60C8;
+    }
+
+    .sparkle {
+      position: fixed;
+      pointer-events: none;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: radial-gradient(circle, white, transparent);
+      opacity: 0;
+      animation: sparkleRound 1.2s ease-out forwards;
+      z-index: 9999;
+    }
+
+    @keyframes sparkleRound {
+      0% {
+        transform: scale(0.5);
+        opacity: 0;
+        box-shadow: 0 0 0px white;
+      }
+      30% {
+        transform: scale(1.8);
+        opacity: 1;
+        box-shadow: 0 0 10px #fff;
+      }
+      60% {
+        transform: scale(1.1);
+        opacity: 0.7;
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
+        box-shadow: 0 0 0px transparent;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Enter OTP</h2>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul>
+          {% for msg in messages %}
+            <li>{{ msg }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="POST">
+      <label>OTP:</label>
+      <input type="text" name="otp" required maxlength="6" pattern="\d{6}" />
+      <button type="submit">Verify OTP</button>
+    </form>
+    <p>Didn't get the OTP? <a href="{{ url_for('signup') }}">Sign up again</a></p>
+  </div>
+
+  <script>
+    const colors = [
+      '#AA60C8', '#6B4F9B', '#3E2F72',
+      '#1F1B3A', '#4B527E', '#70587C',
+      '#2D2D40', '#AA60C8', '#C39CEB'
+    ];
+
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.classList.add('sparkle');
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      sparkle.style.background = `radial-gradient(circle, ${colors[Math.floor(Math.random() * colors.length)]}, transparent)`;
+      document.body.appendChild(sparkle);
+
+      setTimeout(() => sparkle.remove(), 1200);
+    }
+
+    document.addEventListener('mousemove', (e) => {
+      for (let i = 0; i < 4; i++) {
+        const offsetX = (Math.random() - 0.5) * 40;
+        const offsetY = (Math.random() - 0.5) * 40;
+        createSparkle(e.clientX + offsetX, e.clientY + offsetY);
+      }
+    });
+  </script>
+</body>
+</html>
