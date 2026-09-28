@@ -16,11 +16,11 @@ def home():
 # Roboflow
 CLIENT = InferenceHTTPClient(
     api_url="https://serverless.roboflow.com",
-    api_key="X3PiayjEhkfMyE96iL1w"
+    api_key=""
 )
 
 # Gemini setup
-genai.configure(api_key="surya")
+genai.configure(api_key="a")
 model = genai.GenerativeModel("gemini-1.5-flash")
 
 def get_grocery_info(grocery_name):
