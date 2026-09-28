@@ -8,7 +8,7 @@ import google.generativeai as genai
 # Initialize Roboflow Inference client
 CLIENT = InferenceHTTPClient(
     api_url="https://serverless.roboflow.com",
-    api_key="X3PiayjEhkfMyE96iL1w"
+    api_key=""
 )
 
 # Set up Gemini API key
